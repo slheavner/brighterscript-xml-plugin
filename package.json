@@ -13,7 +13,8 @@
   "scripts": {
     "build": "npm run clean && tsc",
     "test": "mocha",
-    "clean": "rm -r dist"
+    "clean": "rm -r dist",
+    "prepack": "npm run build"
   },
   "mocha": {
     "spec": "src/**/*.spec.ts",

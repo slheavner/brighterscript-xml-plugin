@@ -302,7 +302,7 @@ export class SGXmlCompletionProvider {
           label: 'new component',
           insertText: `<component name="" extends="Group">
       
-  </component>`,
+</component>`,
         });
       }
     }
