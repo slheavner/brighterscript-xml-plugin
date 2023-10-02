@@ -11,14 +11,14 @@
 
 ### Installation
 ```
-npm i bsc-xml
+npm i brighterscript-xml-plugin
 ```
 `bsconfig.json`
 ```
 {
     ...
     plugins: [
-        'bsc-xml'
+        'brighterscript-xml-plugin'
     ]
 }
 ```
