@@ -3,9 +3,17 @@
   "version": "0.0.1",
   "description": "BrighterScript plugin for SceneGraph XML completions",
   "main": "dist/index.js",
+  "keywords": [
+    "roku",
+    "brightscript",
+    "scenegraph",
+    "brighterscript",
+    "bsc"
+  ],
   "scripts": {
-    "build": "tsc",
-    "test": "mocha"
+    "build": "npm run clean && tsc",
+    "test": "mocha",
+    "clean": "rm -r dist"
   },
   "mocha": {
     "spec": "src/**/*.spec.ts",
@@ -42,6 +50,7 @@
     }
   },
   "files": [
-    "dist/*.js"
+    "dist/*.js",
+    "!dist/*.spec.js"
   ]
 }
