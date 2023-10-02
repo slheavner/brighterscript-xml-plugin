@@ -1,0 +1,11 @@
+<component name="MainScene" extends="Scene">
+    <script type="text/brightscript" uri="MainScene.bs" />
+    <interface>
+
+    </interface>
+    <children>
+        <Button id="myButton" height="1"></Button>
+
+        <ItemView thisField="" thisField2="" focusable="true"></ItemView>
+    </children>
+</component>

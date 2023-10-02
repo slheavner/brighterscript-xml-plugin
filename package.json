@@ -1,0 +1,47 @@
+{
+  "name": "brighterscript-xml-plugin",
+  "version": "0.0.1",
+  "description": "BrighterScript plugin for SceneGraph XML completions",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha"
+  },
+  "mocha": {
+    "spec": "src/**/*.spec.ts",
+    "require": [
+      "source-map-support/register",
+      "ts-node/register"
+    ],
+    "fullTrace": true,
+    "timeout": 60000,
+    "watchExtensions": [
+      "ts"
+    ]
+  },
+  "author": "Sam Heavner",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.3.4",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.15.3",
+    "brighterscript": "0.65.x",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "source-map-support": "^0.5.21",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2",
+    "vscode-languageserver-types": "^3.17.3"
+  },
+  "peerDependencies": {
+    "brighterscript": "0.65.x"
+  },
+  "peerDependenciesMeta": {
+    "brighterscript": {
+      "optional": false
+    }
+  },
+  "files": [
+    "dist/*.js"
+  ]
+}

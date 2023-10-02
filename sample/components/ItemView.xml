@@ -1,0 +1,6 @@
+<component name="ItemView" extends="Group">
+    <interface>
+        <field id="thisField" type="integer" value="1" />
+        <field id="thisField2" type="integer" value="1" />
+    </interface>
+</component>

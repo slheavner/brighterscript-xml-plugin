@@ -1,0 +1,6 @@
+{
+  "files": ["manifest", "source/**/*.*", "components/**/*.*", "images/**/*.*"],
+  "createPackage": false,
+  "plugins": ["../dist/index.js"],
+  "require": ["ts-node/register"]
+}
