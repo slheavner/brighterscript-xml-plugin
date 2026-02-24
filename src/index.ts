@@ -1,28 +1,47 @@
 import {
+  BeforeProvideCompletionsEvent,
+  BscFile,
   CompilerPlugin,
   isXmlFile,
+  OnFileValidateEvent,
+  Program,
   ProvideCompletionsEvent,
   XmlFile,
 } from 'brighterscript';
 import { SGXmlCompletionProvider } from './SGXmlCompletionProvider';
-import { randomUUID } from 'crypto';
+import { SGXmlValidator } from './SGXmlValidator';
 
 export class BscXmlPlugin implements CompilerPlugin {
   name: string = 'bsc-xml-plugin';
-  id: string = randomUUID();
+  provider: SGXmlCompletionProvider | undefined
+  validator: SGXmlValidator | undefined
 
-  constructor() {
-    // console.log('creating bsc xml plugin');
+  getValidator(validateEvent: OnFileValidateEvent<BscFile>) {
+    if (!this.validator) {
+      this.validator = new SGXmlValidator(validateEvent.program)
+    }
+    return this.validator
   }
 
-  provideCompletions(completionEvent: ProvideCompletionsEvent) {
-    if (isXmlFile(completionEvent.file)) {
-      return new SGXmlCompletionProvider(completionEvent.program).process(
-        completionEvent as ProvideCompletionsEvent<XmlFile>
-      );
+  getProvider(program: Program) {
+    if (!this.provider) {
+      this.provider = new SGXmlCompletionProvider(program)
+    }
+    return this.provider
+  }
+
+  beforeProvideCompletions(event: BeforeProvideCompletionsEvent<BscFile>) {
+    if (isXmlFile(event.file)) {
+      console.log(event.completions)
+      this.getProvider(event.program).process(event as ProvideCompletionsEvent<XmlFile>)
     }
   }
-  // provideHover(event: ProvideHoverEvent) {}
+
+  onFileValidate(event: OnFileValidateEvent<BscFile>) {
+    if (isXmlFile(event.file)) {
+      this.getValidator(event).validateXmlFile(event)
+    }
+  }
 }
 
 export default () => {

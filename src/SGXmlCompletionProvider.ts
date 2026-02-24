@@ -54,7 +54,7 @@ export class SGXmlCompletionProvider {
     let result: CompletionItem[] = [];
     if (projectComponent) {
       result.push(...this.getCompletionsFromXmlFile(projectComponent.file));
-      const extendsName = projectComponent.file.ast.component?.extends;
+      const extendsName = projectComponent.file.ast.component?.extends ?? 'Node'
       if (extendsName) {
         result.push(...this.getAllAvailableFields(extendsName));
       }
@@ -74,7 +74,7 @@ export class SGXmlCompletionProvider {
 
   getCompletionsFromXmlFile(xmlFile: XmlFile): CompletionItem[] {
     return (
-      xmlFile.ast.component?.api.fields.map((f) => {
+      xmlFile.ast.component?.api?.fields.map((f) => {
         return {
           label: f.id,
           detail: `${f.type}${f.value ? `: ${f.value}` : ''}`,
@@ -93,9 +93,8 @@ export class SGXmlCompletionProvider {
           sortText: '<' + obj.name,
           kind: CompletionItemKind.Class,
           insertTextFormat: InsertTextFormat.Snippet,
-          insertText: `${beforeToken === '<' ? '' : '<'}${obj.name} $0></${
-            obj.name
-          }>`,
+          insertText: `${beforeToken === '<' ? '' : '<'}${obj.name} $0></${obj.name
+            }>`,
         } as CompletionItem;
       }),
       ...this.program
@@ -109,9 +108,8 @@ export class SGXmlCompletionProvider {
             sortText: '<' + name.text,
             kind: CompletionItemKind.Class,
             insertTextFormat: InsertTextFormat.Snippet,
-            insertText: `${beforeToken === '<' ? '' : '<'}${name.text} $0></${
-              name.text
-            }>`,
+            insertText: `${beforeToken === '<' ? '' : '<'}${name.text} $0></${name.text
+              }>`,
           } as CompletionItem;
         })
     );
@@ -207,22 +205,22 @@ export class SGXmlCompletionProvider {
     const beforeToken = cursorToken
       ? cursorToken
       : tokens.find((t, i, o) => {
-          if (t.endLine <= position.line + 1) {
-            const nextStartLine = o[i + 1]?.startLine ?? -1;
-            let nextStartColumn = -1;
-            if (nextStartLine === position.line + 1) {
-              nextStartColumn = o[i + 1]?.startColumn;
-            } else if (nextStartLine > position.line + 1) {
-              nextStartColumn = Number.MAX_SAFE_INTEGER;
-            }
-            return (
-              (t.endLine < position.line + 1 ||
-                (t.endColumn ?? 0) < position.character + 1) &&
-              nextStartColumn > position.character
-            );
+        if (t.endLine <= position.line + 1) {
+          const nextStartLine = o[i + 1]?.startLine ?? -1;
+          let nextStartColumn = -1;
+          if (nextStartLine === position.line + 1) {
+            nextStartColumn = o[i + 1]?.startColumn;
+          } else if (nextStartLine > position.line + 1) {
+            nextStartColumn = Number.MAX_SAFE_INTEGER;
           }
-          return false;
-        });
+          return (
+            (t.endLine < position.line + 1 ||
+              (t.endColumn ?? 0) < position.character + 1) &&
+            nextStartColumn > position.character
+          );
+        }
+        return false;
+      });
 
     if (beforeToken) {
       if (beforeToken.image === '<') {

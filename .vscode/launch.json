@@ -8,10 +8,29 @@
       "type": "node",
       "request": "launch",
       "name": "Test",
-      "skipFiles": ["<node_internals>/**"],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
       "program": "${workspaceFolder}/node_modules/.bin/mocha",
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/src/**/*.ts"]
+      "outFiles": [
+        "${workspaceFolder}/src/**/*.ts"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Validate",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceFolder}/sample",
+      "program": "${workspaceFolder}/node_modules/.bin/bsc",
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/src/**/*.ts"
+      ],
+      "args": []
     }
   ]
 }

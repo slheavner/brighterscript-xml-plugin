@@ -2,5 +2,9 @@
     <interface>
         <field id="thisField" type="integer" value="1" />
         <field id="thisField2" type="integer" value="1" />
+        <field id="thisField3" type="integer" value="1" asdf="asdf" />
     </interface>
+    <children>
+        <Group></Group>
+    </children>
 </component>

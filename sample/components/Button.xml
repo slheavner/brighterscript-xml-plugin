@@ -1,0 +1,6 @@
+<component name="Button" extends="Group">
+    <children>
+        <Label id="label" text="Click me" />
+
+    </children>
+</component>

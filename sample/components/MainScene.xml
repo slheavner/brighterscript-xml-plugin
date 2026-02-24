@@ -1,11 +1,14 @@
 <component name="MainScene" extends="Scene">
     <script type="text/brightscript" uri="MainScene.bs" />
     <interface>
-
+        <function name="init" />
     </interface>
     <children>
         <Button id="myButton" height="1"></Button>
-
-        <ItemView thisField="" thisField2="" focusable="true"></ItemView>
+        <ItemView id="asdf" thisField="123"></ItemView>
+        <ItemView thisField="1" thisField2="1" focusable="true"></ItemView>
+        <ItemView id="asdf"
+            clippingRect="[12, 12]"
+        ></ItemView>
     </children>
 </component>
