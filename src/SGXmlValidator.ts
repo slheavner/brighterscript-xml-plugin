@@ -1,13 +1,13 @@
-import { BscFile, BsDiagnostic, OnFileValidateEvent, Program, XmlFile } from "brighterscript";
-import { nodes } from "brighterscript/dist/roku-types";
+import { BscFile, OnFileValidateEvent, Program, XmlFile } from "brighterscript";
+import { nodes } from "./data";
 import { SystemNode } from "./SystemCompletion";
 import fieldTypeValidator from "./FieldTypeValidator";
 import { SGNode } from "brighterscript/dist/parser/SGTypes";
+import { NoFileDiagnostic, SGXmlDiagnostics } from "./SGXmlDiagnostics";
 
 
 const systemNodes = nodes as unknown as { [key: string]: SystemNode };
 
-type NoFileDiagnostic = Omit<BsDiagnostic, 'file'>
 
 export class SGXmlValidator {
 
@@ -16,15 +16,6 @@ export class SGXmlValidator {
 
     constructor(program: Program) {
         this.program = program;
-        for (const systemNodeKey in systemNodes) {
-            const systemNode = systemNodes[systemNodeKey];
-            systemNode.fields.forEach(field => {
-                const result = fieldTypeValidator.validateFieldType("", field.type);
-                if (typeof result === 'string') {
-                    this.program.logger.error(`Unknown field type: "${result}" for field ${field.name} in system node ${systemNode.name}`);
-                }
-            })
-        }
     }
 
     validateXmlFile(event: OnFileValidateEvent<BscFile>) {
@@ -41,74 +32,50 @@ export class SGXmlValidator {
     }
 
     validateComponent(element: SGNode): NoFileDiagnostic[] {
-
-        let component: any = this.program.getComponent(element.tag.text)
-        if (component) {
-            return this.validateProjectComponent(element, component.file as XmlFile)
-        }
-        component = systemNodes[element.tag.text.toLocaleLowerCase()]
-        if (component) {
-            return this.validateSystemNode(element, component)
-        }
-        this.program.logger.error(`Unknown component: ${element.tag.text}`, element);
-        const diag = {
-            message: `Unknown component: ${element.tag.text}`,
-            range: element.tag.range!,
-        }
-        return [diag]
-
-    }
-
-
-    validateSystemNode(element: SGNode, systemNode: SystemNode): NoFileDiagnostic[] {
         const diags: NoFileDiagnostic[] = []
-        const fields = this.findAllFields(systemNode.name);
-        element.attributes.forEach((attr) => {
-            const field = fields.find(a => {
-                return a.id === attr.key.text
+        if (this.validateComponentExists(element)) {
+            diags.push(...this.validateNodeElement(element))
+            element.children.forEach((child) => {
+                diags.push(...this.validateComponent(child))
             })
-            if (!field) {
-                this.program.logger.error(`Invalid system attribute: ${attr.key.text}`, attr);
-                diags.push({
-                    message: `Invalid system attribute: ${attr.key.text}`,
-                    range: attr.key.range!,
-                });
-            } else if (!fieldTypeValidator.validateFieldType(attr.value.text, field.type)) {
-                this.program.logger.error(`Invalid value for attribute: ${attr.key.text}`, attr);
-                diags.push({
-                    message: `Attribute "${attr.key.text}" does not match type: ${field.type}`,
-                    range: attr.value?.range!,
-                });
+        } else {
+            this.program.logger.error(`Unknown component: ${element.tag.text}`, element);
+            const diag = SGXmlDiagnostics.UnknownComponent(element.tag.text, element);
+            diags.push(diag)
 
-            }
-        })
+        }
         return diags;
     }
 
-    validateProjectComponent(element: SGNode, file: XmlFile): NoFileDiagnostic[] {
+
+    validateNodeElement(element: SGNode): NoFileDiagnostic[] {
         const diags: NoFileDiagnostic[] = []
         const fields = this.findAllFields(element.tag.text);
         element.attributes.forEach((attr) => {
             const field = fields.find(a => {
-                return a.id === attr.key.text
+                return a.id.toLowerCase() === attr.key.text.toLowerCase()
             })
             if (!field) {
-                this.program.logger.error(`Invalid attribute: ${attr.key.text}`, attr);
-                diags.push({
-                    message: `Invalid attribute: ${attr.key.text}`,
-                    range: attr.key.range!,
-                });
-            } else if (!fieldTypeValidator.validateFieldType(attr.value.text, field.type)) {
+                this.program.logger.error(`Invalid system attribute: ${attr.key.text}`, attr);
+                diags.push(SGXmlDiagnostics.InvalidSystemAttribute(attr.key.text, element.tag.text, attr));
+                return
+            }
+            if (field.type && !fieldTypeValidator.validateFieldType(attr.value.text, field.type)) {
                 this.program.logger.error(`Invalid value for attribute: ${attr.key.text}`, attr);
-                diags.push({
-                    message: `Attribute "${attr.key.text}" does not match type: ${field.type}`,
-                    range: attr.value?.range!,
-                });
+                diags.push(SGXmlDiagnostics.InvalidAttributeValue(attr.key.text, field.type, attr));
+            }
+            if (field.id !== attr.key.text) {
+                this.program.logger.warn(`Field "${attr.key.text}" should be "${field.id}"`, attr);
+                diags.push(SGXmlDiagnostics.AttributeNameCaseMismatch(attr.key.text, field.id, attr));
             }
         })
         return diags;
     }
 
+    validateComponentExists(element: SGNode): boolean {
+        let component = this.program.getComponent(element.tag.text) || systemNodes[element.tag.text.toLocaleLowerCase()]
+        return !!component
+    }
 
     findAllFields(name: string) {
         const fields: {

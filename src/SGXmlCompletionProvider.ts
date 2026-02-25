@@ -9,7 +9,7 @@ import {
   CompletionItemKind,
   InsertTextFormat,
 } from 'vscode-languageserver-types';
-import { nodes } from 'brighterscript/dist/roku-types';
+import { nodes } from './data';
 import { SystemCompletion, SystemNode } from './SystemCompletion';
 
 const OPEN_CLOSE_TAGS = ['<', '</', '>', '/>'];

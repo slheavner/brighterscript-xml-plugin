@@ -70,10 +70,10 @@ const fieldTypeValidator: { [key: string]: Function } = {
         return typeof value === 'string';
     },
     float: (value: string) => {
-        return /^-?\d+(\.\d+)?$/.test(value);
+        return /^-?\d+(\.\d+)?$/.test(value) || /^\.\d+$/.test(value);
     },
     color: (value: string) => {
-        return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value);
+        return /^(#|0[xX])([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value);
     },
     str: (value: string) => {
         return fieldTypeValidator.string(value);
@@ -104,7 +104,7 @@ const fieldTypeValidator: { [key: string]: Function } = {
         return fieldTypeValidator.string(value);
     },
     vector2d: (value: string) => {
-        fieldTypeValidator.asArray(fieldTypeValidator.float, value);
+        return fieldTypeValidator.floatarray(value);
     },
     floatarray: (value: string) => {
         return fieldTypeValidator.asArray(fieldTypeValidator.float, value);
