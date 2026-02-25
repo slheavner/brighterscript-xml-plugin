@@ -1,6 +1,6 @@
 {
   "name": "brighterscript-xml-plugin",
-  "version": "0.3.0",
+  "version": "1.0.0-alpha.1",
   "description": "BrighterScript plugin for SceneGraph XML completions",
   "main": "dist/index.js",
   "repository": {
@@ -37,7 +37,7 @@
     "@types/chai": "^4.3.4",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.15.3",
-    "brighterscript": "0.65.x",
+    "brighterscript": "^1.0.0-alpha.50",
     "chai": "^4.3.7",
     "mocha": "^10.2.0",
     "rimraf": "^5.0.5",
@@ -47,7 +47,7 @@
     "vscode-languageserver-types": "^3.17.3"
   },
   "peerDependencies": {
-    "brighterscript": ">= 0.65.0 < 1"
+    "brighterscript": ">= 1 < 2"
   },
   "peerDependenciesMeta": {
     "brighterscript": {

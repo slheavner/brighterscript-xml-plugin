@@ -54,7 +54,7 @@ export class SGXmlCompletionProvider {
     let result: CompletionItem[] = [];
     if (projectComponent) {
       result.push(...this.getCompletionsFromXmlFile(projectComponent.file));
-      const extendsName = projectComponent.file.ast.component?.extends ?? 'Node'
+      const extendsName = projectComponent.file.ast.componentElement?.extends ?? 'Node'
       if (extendsName) {
         result.push(...this.getAllAvailableFields(extendsName));
       }
@@ -74,7 +74,7 @@ export class SGXmlCompletionProvider {
 
   getCompletionsFromXmlFile(xmlFile: XmlFile): CompletionItem[] {
     return (
-      xmlFile.ast.component?.api?.fields.map((f) => {
+      xmlFile.ast.componentElement?.interfaceElement?.fields.map((f) => {
         return {
           label: f.id,
           detail: `${f.type}${f.value ? `: ${f.value}` : ''}`,
@@ -121,7 +121,7 @@ export class SGXmlCompletionProvider {
     let result = [];
     if (component) {
       result = [
-        ...(component.file.ast.component?.api?.fields.map((f) => {
+        ...(component.file.ast.componentElement?.interfaceElement?.fields.map((f) => {
           return {
             name: f.id,
             type: f.type,
@@ -129,7 +129,7 @@ export class SGXmlCompletionProvider {
           };
         }) ?? []),
         ...this.getAllAvailableFields(
-          component.file.ast.component?.extends ?? ''
+          component.file.ast.componentElement?.extends ?? ''
         ).map((f) => {
           return {
             ...f,
@@ -182,7 +182,7 @@ export class SGXmlCompletionProvider {
     return result;
   }
 
-  process(event: ProvideCompletionsEvent) {
+  process(event: ProvideCompletionsEvent<XmlFile>) {
     const { file, position } = event;
     const tokens: LinkedToken[] = event.file.parser.tokens.map((t, i) => {
       return {

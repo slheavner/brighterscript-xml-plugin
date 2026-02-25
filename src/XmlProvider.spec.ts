@@ -24,7 +24,7 @@ describe('XmlProvider class', () => {
       ...options,
       cwd: join(__dirname, '../sample'),
     });
-    program = builder.program;
+    program = builder.program!;
   });
 
   afterEach(() => {
@@ -45,8 +45,8 @@ describe('XmlProvider class', () => {
     const path = 'components/TestNode.xml';
     const file = program.setFile(path, componentWithChildren(``)) as XmlFile;
     try {
-      file.parser.parse(path, componentWithChildren('         '));
-    } catch (e) {}
+      file.parser.parse(componentWithChildren('         '));
+    } catch (e) { }
     const completions = program.getCompletions(path, util.createPosition(2, 5));
     const labels = completions.map((e) => e.label);
     expect(labels).to.include('RowList');
@@ -57,8 +57,8 @@ describe('XmlProvider class', () => {
     const path = 'components/TestNode.xml';
     const file = program.setFile(path, componentWithChildren(``)) as XmlFile;
     try {
-      file.parser.parse(path, componentWithChildren('<'));
-    } catch (e) {}
+      file.parser.parse(componentWithChildren('<'));
+    } catch (e) { }
     const completions = program.getCompletions(path, util.createPosition(2, 5));
     const labels = completions.map((e) => e.label);
     expect(labels).to.include('RowList');
@@ -69,8 +69,8 @@ describe('XmlProvider class', () => {
     const path = 'components/TestNode.xml';
     const file = program.setFile(path, componentWithChildren(``)) as XmlFile;
     try {
-      file.parser.parse(path, componentWithChildren('<RowList '));
-    } catch (e) {}
+      file.parser.parse(componentWithChildren('<RowList '));
+    } catch (e) { }
     const completions = program.getCompletions(
       path,
       util.createPosition(2, 13)
@@ -85,8 +85,8 @@ describe('XmlProvider class', () => {
     const path = 'components/TestNode.xml';
     const file = program.setFile(path, componentWithChildren(``)) as XmlFile;
     try {
-      file.parser.parse(path, componentWithChildren('<RowList >'));
-    } catch (e) {}
+      file.parser.parse(componentWithChildren('<RowList >'));
+    } catch (e) { }
     const completions = program.getCompletions(
       path,
       util.createPosition(2, 13)
@@ -100,8 +100,8 @@ describe('XmlProvider class', () => {
     const path = 'components/TestNode.xml';
     const file = program.setFile(path, componentWithChildren(``)) as XmlFile;
     try {
-      file.parser.parse(path, componentWithChildren('<RowList />'));
-    } catch (e) {}
+      file.parser.parse(componentWithChildren('<RowList />'));
+    } catch (e) { }
     const completions = program.getCompletions(
       path,
       util.createPosition(2, 13)
@@ -116,13 +116,12 @@ describe('XmlProvider class', () => {
     const file = program.setFile(path, componentWithChildren(``)) as XmlFile;
     try {
       file.parser.parse(
-        path,
         componentWithChildren(`<RowList
       
       
       />`)
       );
-    } catch (e) {}
+    } catch (e) { }
     const completions = program.getCompletions(path, util.createPosition(3, 4));
     expect(completions.find((e) => e.label === 'rowItemSize')).to.not.be
       .undefined;
