@@ -81,7 +81,6 @@ describe('XmlProvider class', () => {
   });
 
   it('suggests fields for component with end tag', () => {
-    console.log('Asdfasdfasdfadsfdsf');
     const path = 'components/TestNode.xml';
     const file = program.setFile(path, componentWithChildren(``)) as XmlFile;
     try {

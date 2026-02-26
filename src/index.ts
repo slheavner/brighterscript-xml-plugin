@@ -45,7 +45,6 @@ export class BscXmlPlugin implements Plugin {
   provideCompletions(event: ProvideCompletionsEvent<BscFile>) {
     console.log('provideCompletions', event.file.constructor.name)
     if (isXmlFile(event.file)) {
-      console.log(event.completions)
       this.getProvider(event.program).process(event as ProvideCompletionsEvent<XmlFile>)
     }
   }
