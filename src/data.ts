@@ -6780,7 +6780,474 @@ export const nodes = {
     "timegrid": {
         "description": "OTT providers can use the TimeGrid node to implement an Electronic Program Guide (EPG) in their apps. In an EPG, channels are represented as horizontal rows, one for each channel. Each row has an channel name on the left, and a set of programs airing on that app to the right. The size of each program depends on its duration. One of these programs has a remote control focus highlight indicator on it, and this highlight can be moved around using the remote control (as long as the TimeGrid node has remote control focus).\n\nThe TimeGrid node also features an alternative Now/Next view that lists only the programs currently airing and airing next, with their respective start times. See [Now/Next mode](https://developer.roku.com/docs/references/scenegraph/list-and-grid-nodes/timegrid.mdnownext-mode) for more information.\n\n![roku815px - time grid](https://image.roku.com/ZHZscHItMTc2/epg-standard.jpg \"time grid\")",
         "events": [],
-        "fields": [],
+        "extends": {
+            "name": "Group",
+            "url": "https://developer.roku.com/docs/references/scenegraph/layout-group-nodes/group.md"
+        },
+        "fields": [
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "invalid",
+                "description": "Specifies the content for the time grid. Should be a single ContentNode with one child ContentNode per channel, each of which has child ContentNodes for each program sorted by start time ascending.",
+                "name": "content",
+                "type": "ContentNode"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "7",
+                "description": "Specifies the total width of the time grid in days.",
+                "name": "maxDays",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "0",
+                "description": "The earliest time to which the time grid can be scrolled. The scrollable range of times is defined by the sum of the contentStartTime and maxDays fields.",
+                "name": "contentStartTime",
+                "type": "roDateTime"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "9000",
+                "description": "Width (in seconds) of the visible section of the time grid. For example, setting this to 10800 will cause the time grid to display 3 hours of programs horizontally.",
+                "name": "duration",
+                "type": "float"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "0",
+                "description": "Specifies the time (in seconds) that the time grid will be displayed before automatically being hidden. Setting this field to 0 will cause the time grid to never be hidden.",
+                "name": "autoDismissTime",
+                "type": "roDateTime"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "false",
+                "description": "If set to true, ignores fast forward, rewind, and instant replay key events.",
+                "name": "ignoreTrickPlayKeys",
+                "type": "Boolean"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "",
+                "description": "Specifies an overlay bitmap drawn on top of the entire time grid. In most cases, this should be a 9-patch image.",
+                "name": "overlayBitmapUri",
+                "type": "uri"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "0",
+                "description": "Specifies the height of the overlay image. If set to 0 the overlay image is drawn at its default height.",
+                "name": "overlayHeight",
+                "type": "float"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "",
+                "description": "Specifies the bitmap file used for the focus indicator when the list has focus. In most cases, this should be a 9-patch image.",
+                "name": "focusBitmapUri",
+                "type": "uri"
+            },
+            {
+                "accessPermission": "WRITE_ONLY",
+                "default": "0",
+                "description": "Scrolls the grid so the row corresponding to the specified channel index is on screen.",
+                "name": "animateToChannel",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "WRITE_ONLY",
+                "default": "0",
+                "description": "Jumps the grid so the row corresponding to the specified channel index is on screen.",
+                "name": "jumpToChannel",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "WRITE_ONLY",
+                "default": "",
+                "description": "Jumps the grid to the program at the specified time (in UTC format).",
+                "name": "jumpToTime",
+                "type": "string"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "none",
+                "description": "When explicitly set, triggers a horizontally scrolling animation so that the specified time is displayed at the left edge of the program grid.",
+                "name": "leftEdgeTargetTime",
+                "type": "roDateTime"
+            },
+            {
+                "accessPermission": "READ_ONLY",
+                "default": "0",
+                "description": "Indicates the index of the selected channel when the user makes a selection.",
+                "name": "channelSelected",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_ONLY",
+                "default": "0",
+                "description": "Indicates the index of the focused channel when a program in the channel's row gains focus.",
+                "name": "channelFocused",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_ONLY",
+                "default": "false",
+                "description": "Indicates the index of the focused channel when a program in the channel's row loses focus.",
+                "name": "channelUnfocused",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "invalid",
+                "description": "Uses the specified RSG component to display the data for each channel in the Channel Information column.",
+                "name": "channelInfoComponentName",
+                "type": "roSGNode"
+            },
+            {
+                "accessPermission": "READ_ONLY",
+                "default": "0",
+                "description": "Indicates the index of the selected channel when the user selects an item in the Channel Information column.",
+                "name": "channelInfoSelected",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_ONLY",
+                "default": "0",
+                "description": "Indicates the index of the channel when a channel in the Channel Information column gains focus.",
+                "name": "channelInfoFocused",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_ONLY",
+                "default": "0",
+                "description": "Indicates the index of the channel when a channel in the Channel Information column loses focus.",
+                "name": "channelInfoUnfocused",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "false",
+                "description": "Indicates whether the user can move focus into the Channel Information column.",
+                "name": "channelInfoFocusable",
+                "type": "Boolean"
+            },
+            {
+                "accessPermission": "WRITE_ONLY",
+                "default": "0",
+                "description": "Jumps the grid immediately to the channel info column box of the specified channel index.",
+                "name": "jumpToChannelInfo",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "system default",
+                "description": "Width of the column showing the channel names.",
+                "name": "channelInfoWidth",
+                "type": "float"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "0",
+                "description": "Spacing between the Channel Information column and the main grid.",
+                "name": "infoGridGap",
+                "type": "float"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "",
+                "description": "Specifies text used as a label for the header of the Channel Information column.",
+                "name": "channelInfoColumnLabel",
+                "type": "string"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "system default",
+                "description": "Specifies the text color for the channel names in the Channel Information column.",
+                "name": "channelInfoTextColor",
+                "type": "color"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "system default",
+                "description": "Specifies the font for the channel names in the Channel Information column.",
+                "name": "channelInfoFont",
+                "type": "font"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "",
+                "description": "Specifies the bitmap file to use as the background for the channel names in the Channel Information column. In most cases, this should be a 9-patch image.",
+                "name": "channelInfoBackgroundBitmapUri",
+                "type": "uri"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "left",
+                "description": "Specifies which side the Channel Information column is displayed on. \"left\" (default) or \"right\".",
+                "name": "channelInfoAlignment",
+                "type": "string"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "system default",
+                "description": "Specifies the text color for the program title that is focused.",
+                "name": "programTitleFocusedColor",
+                "type": "color"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "system default",
+                "description": "Specifies the text color for program titles that are unfocused.",
+                "name": "programTitleColor",
+                "type": "color"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "system default",
+                "description": "Specifies the font for the program titles.",
+                "name": "programTitleFont",
+                "type": "font"
+            },
+            {
+                "accessPermission": "READ_ONLY",
+                "default": "0",
+                "description": "Indicates the index of the program in the currently focused channel row when the user selects a program.",
+                "name": "programSelected",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_ONLY",
+                "default": "0",
+                "description": "Indicates the index of the program in the currently focused channel row when the program gains focus.",
+                "name": "programFocused",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_ONLY",
+                "default": "0",
+                "description": "Indicates the index of the program in the currently focused channel row when the program loses focus.",
+                "name": "programUnfocused",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_ONLY",
+                "default": "invalid",
+                "description": "Includes focusChannelIndex and focusIndex elements that indicate the channel index and program index respectively when a program gains focus.",
+                "name": "programFocusedDetails",
+                "type": "assocarray"
+            },
+            {
+                "accessPermission": "WRITE_ONLY",
+                "default": "0",
+                "description": "Jumps the grid immediately to the program corresponding to the specified program index for the currently focused row.",
+                "name": "jumpToProgram",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "14",
+                "description": "Specifies the width of the left and right margins of program cell text.",
+                "name": "programHorizMargin",
+                "type": "float"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "",
+                "description": "Specifies the bitmap file to use as the background for the program names in the grid. In most cases, this should be a 9-patch image.",
+                "name": "programBackgroundBitmapUri",
+                "type": "uri"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "false",
+                "description": "Inserts a program with the \"No Data Available\" label if there is a gap between the program's start time and the previous program's end time.",
+                "name": "fillProgramGaps",
+                "type": "Boolean"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "true",
+                "description": "Enables the program data region of the grid to be automatically replaced with the loading message whenever the content field has not been set or the user scrolls to a time where the content has not yet been loaded.",
+                "name": "automaticLoadingDataFeedback",
+                "type": "Boolean"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "false",
+                "description": "Replaces the program data region of the grid with the loading message. Ignored if automaticLoadingDataFeedback is true.",
+                "name": "showLoadingDataFeedback",
+                "type": "Boolean"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "Loading Data…",
+                "description": "The text to be displayed over the program grid whenever the loading message is to be shown.",
+                "name": "loadingDataText",
+                "type": "string"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "No Data Available",
+                "description": "Displays the specified text on each channel row if no data exists for a specific time or if there is a gap in the program data.",
+                "name": "channelNoDataText",
+                "type": "string"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "true",
+                "description": "If true, enables drawing a solid color background behind all the programs in the grid airing before the current time.",
+                "name": "showPastTimeScreen",
+                "type": "Boolean"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "0xFFFFFFFF",
+                "description": "Tints the past time screen by multiplying the color of each pixel by the specified value.",
+                "name": "pastTimeScreenBlendColor",
+                "type": "color"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "",
+                "description": "Displays the specified bitmap file in the background of the past time screen.",
+                "name": "pastTimeScreenBitmapUri",
+                "type": "uri"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "50",
+                "description": "Specifies the height of the region above the channel grid where the time labels are displayed.",
+                "name": "timeBarHeight",
+                "type": "float"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "",
+                "description": "Specifies the bitmap file to use as the background of the time bar. In most cases, this should be a 9-patch image.",
+                "name": "timeBarBitmapUri",
+                "type": "uri"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "0xffffff99",
+                "description": "Specifies the text color for the time labels displayed in the time bar at the top of the TimeGrid.",
+                "name": "timeLabelColor",
+                "type": "color"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "system default",
+                "description": "Specifies the font for the time labels displayed in the time bar at the top of the TimeGrid.",
+                "name": "timeLabelFont",
+                "type": "font"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "14",
+                "description": "Specifies the offset from the edge of the grid of the leftmost time label.",
+                "name": "timeLabelOffset",
+                "type": "float"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "system default",
+                "description": "Specifies the width of the Now Bar.",
+                "name": "nowBarWidth",
+                "type": "float"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "system default",
+                "description": "Specifies the height of the Now Bar.",
+                "name": "nowBarHeight",
+                "type": "float"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "",
+                "description": "Specifies the bitmap file used for the Now Bar. In most cases, this should be a 9-patch image.",
+                "name": "nowBarBitmapUri",
+                "type": "uri"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "system default",
+                "description": "Tints the Now Bar by multiplying the color of each pixel by the specified value.",
+                "name": "nowBarBlendColor",
+                "type": "color"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "0",
+                "description": "Specifies the number of pixels the left edge of the Now Bar is offset from the current time.",
+                "name": "nowBarOffset",
+                "type": "integer"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "300",
+                "description": "Specifies (in seconds) the nearest that the Now Bar can be to the left-hand edge of the time grid.",
+                "name": "minimumNowBarOffset",
+                "type": "roDateTime"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "false",
+                "description": "When set to true, the time grid displays two vertical columns of programs showing Now and Next for each channel.",
+                "name": "nowNextMode",
+                "type": "Boolean"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "",
+                "description": "Displays the specified bitmap file in the background of the Now grid within the Now Bar.",
+                "name": "nowBackgroundBitmapUri",
+                "type": "uri"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "",
+                "description": "Displays the specified bitmap file in the background of the Next grid within the Now Bar.",
+                "name": "nextBackgroundBitmapUri",
+                "type": "uri"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "false",
+                "description": "Hides the AM/PM abbreviation next to the times in the Now Bar.",
+                "name": "nowNextHideAmPm",
+                "type": "Boolean"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "0xffffff99",
+                "description": "If Now/Next mode is true, specifies the text color for the time that appears in the now/next program cells when the program is unfocused.",
+                "name": "programNowNextTimeColor",
+                "type": "color"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "0x99",
+                "description": "If Now/Next mode is true, specifies the text color for the time that appears in the Now/Next program cells when the program is focused.",
+                "name": "programNowNextTimeFocusedColor",
+                "type": "color"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "14",
+                "description": "Specifies the width of the left and right margins of program cell text in Now/Next mode.",
+                "name": "programNowNextHorizMargin",
+                "type": "float"
+            },
+            {
+                "accessPermission": "READ_WRITE",
+                "default": "15",
+                "description": "Specifies the gap between the Now and Next entries.",
+                "name": "programNowNextTimeTitleGap",
+                "type": "float"
+            }
+        ],
         "interfaces": [],
         "name": "TimeGrid",
         "url": "https://developer.roku.com/docs/references/scenegraph/list-and-grid-nodes/timegrid.md"
