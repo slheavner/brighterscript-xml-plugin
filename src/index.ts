@@ -32,7 +32,6 @@ export class BscXmlPlugin implements CompilerPlugin {
 
   beforeProvideCompletions(event: BeforeProvideCompletionsEvent<BscFile>) {
     if (isXmlFile(event.file)) {
-      console.log(event.completions)
       this.getProvider(event.program).process(event as ProvideCompletionsEvent<XmlFile>)
     }
   }
