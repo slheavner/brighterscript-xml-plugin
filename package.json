@@ -1,6 +1,6 @@
 {
   "name": "brighterscript-xml-plugin",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "BrighterScript plugin for SceneGraph XML completions",
   "main": "dist/index.js",
   "repository": {
