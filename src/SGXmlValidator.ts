@@ -20,7 +20,7 @@ export class SGXmlValidator {
 
     validateXmlFile(event: OnFileValidateEvent<BscFile>) {
         const file = event.file as XmlFile;
-        const diags = file?.ast?.component?.children.children.flatMap((child) => {
+        const diags = file?.ast?.component?.children?.children?.flatMap((child) => {
             return this.validateComponent(child).map(diag => {
                 return {
                     ...diag,
