@@ -135,6 +135,49 @@ describe('XmlProvider class', () => {
       .undefined;
     expect(completions.find((e) => e.label === 'id')).to.not.be.undefined;
   });
+
+  it('suggests TimeGrid own fields in completions', () => {
+    const path = 'components/TestNode.xml';
+    const file = program.setFile(path, componentWithChildren(``)) as XmlFile;
+    try {
+      file.parser.parse(path, componentWithChildren('<TimeGrid '));
+    } catch (e) {}
+    const completions = program.getCompletions(path, util.createPosition(2, 14));
+    const labels = completions.map((e) => e.label);
+    expect(labels).to.include('content');
+    expect(labels).to.include('nowNextMode');
+    expect(labels).to.include('programTitleColor');
+    expect(labels).to.include('channelInfoWidth');
+  });
+
+  it('suggests TimeGrid inherited Group and Node fields in completions', () => {
+    const path = 'components/TestNode.xml';
+    const file = program.setFile(path, componentWithChildren(``)) as XmlFile;
+    try {
+      file.parser.parse(path, componentWithChildren('<TimeGrid '));
+    } catch (e) {}
+    const completions = program.getCompletions(path, util.createPosition(2, 14));
+    const labels = completions.map((e) => e.label);
+    // inherited from Group
+    expect(labels).to.include('translation');
+    expect(labels).to.include('visible');
+    expect(labels).to.include('opacity');
+    // inherited from Node
+    expect(labels).to.include('id');
+  });
+
+  it('does not raise SG1002 for id and translation on TimeGrid', () => {
+    const path = 'components/TestNode.xml';
+    program.setFile(
+      path,
+      componentWithChildren('<TimeGrid id="scheduleGrid" translation="[0,600]" />')
+    );
+    program.validate();
+    const diags = program
+      .getDiagnostics()
+      .filter((d) => d.file?.srcPath?.includes('TestNode') && d.code === 'SG1002');
+    expect(diags).to.have.lengthOf(0);
+  });
 });
 
 describe('SGXmlValidator', () => {
