@@ -19,7 +19,7 @@ export class SGXmlValidator {
 
     validateXmlFile(event: ValidateFileEvent<BscFile>) {
         const file = event.file as XmlFile;
-        const diags: BsDiagnostic[] = file?.ast?.componentElement?.childrenElement?.elements.flatMap((child) => {
+        const diags: BsDiagnostic[] = file?.ast?.componentElement?.childrenElement?.elements?.flatMap((child) => {
             return this.validateComponent(child)
         }) ?? []
         event.program.diagnostics.register(diags);
