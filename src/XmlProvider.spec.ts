@@ -139,8 +139,8 @@ describe('XmlProvider class', () => {
     const path = 'components/TestNode.xml';
     const file = program.setFile(path, componentWithChildren(``)) as XmlFile;
     try {
-      file.parser.parse(path, componentWithChildren('<TimeGrid '));
-    } catch (e) {}
+      file.parser.parse(componentWithChildren('<TimeGrid '));
+    } catch (e) { }
     const completions = program.getCompletions(path, util.createPosition(2, 14));
     const labels = completions.map((e) => e.label);
     expect(labels).to.include('content');
@@ -153,8 +153,8 @@ describe('XmlProvider class', () => {
     const path = 'components/TestNode.xml';
     const file = program.setFile(path, componentWithChildren(``)) as XmlFile;
     try {
-      file.parser.parse(path, componentWithChildren('<TimeGrid '));
-    } catch (e) {}
+      file.parser.parse(componentWithChildren('<TimeGrid '));
+    } catch (e) { }
     const completions = program.getCompletions(path, util.createPosition(2, 14));
     const labels = completions.map((e) => e.label);
     // inherited from Group
@@ -174,7 +174,7 @@ describe('XmlProvider class', () => {
     program.validate();
     const diags = program
       .getDiagnostics()
-      .filter((d) => d.file?.srcPath?.includes('TestNode') && d.code === 'SG1002');
+      .filter((d) => d.location?.uri?.includes('TestNode') && d.code === 'SG1002');
     expect(diags).to.have.lengthOf(0);
   });
 });
@@ -192,7 +192,7 @@ describe('SGXmlValidator', () => {
       cwd: join(__dirname, '../sample'),
       validate: false,
     });
-    program = builder.program;
+    program = builder.program!;
   });
 
   afterEach(() => {
@@ -225,7 +225,7 @@ describe('SGXmlValidator', () => {
     program.setFile(path, componentWithChildren('<LayoutGroup layoutdirection="vert" />'));
     program.validate();
     const diags = program.getDiagnostics().filter(
-      (d) => (d as any).file?.pkgPath?.includes('TestNode')
+      (d) => d.location?.uri?.includes('TestNode')
     );
     expect(diags).to.have.length.at.least(1);
     expect(diags[0].code).to.equal('SG2001');
